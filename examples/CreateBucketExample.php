@@ -24,10 +24,10 @@ $client = new Client([
     "precision" => InfluxDB2\Model\WritePrecision::S
 ]);
 
-function findMyOrg($client): ?Organization
+function findMyOrg(Client $client): ?Organization
 {
     /** @var OrganizationsService $orgService */
-    $orgService = $client->createService(OrganizationsService::class);
+    $orgService = $client->createGuzzleService(OrganizationsService::class);
     $orgs = $orgService->getOrgs()->getOrgs();
     foreach ($orgs as $org) {
         if ($org->getName() == $client->options["org"]) {
@@ -37,7 +37,7 @@ function findMyOrg($client): ?Organization
     return null;
 }
 
-$bucketsService = $client->createService(BucketsService::class);
+$bucketsService = $client->createGuzzleService(BucketsService::class);
 
 $rule = new BucketRetentionRules();
 $rule->setEverySeconds(3600);

@@ -44,7 +44,7 @@ abstract class BasicTest extends TestCase
             "logFile" => $logFile
         ]);
 
-        $this->writeApi = $this->client->createWriteApi($this->getWriteOptions());
+        $this->writeApi = $this->client->createGuzzleWriteApi($this->getWriteOptions());
         $this->queryApi = $this->client->createQueryApi();
 
         $this->mockHandler = new MockHandler();

@@ -24,7 +24,7 @@ $client = new Client([
     "precision" => InfluxDB2\Model\WritePrecision::S
 ]);
 
-$writeApi = $client->createWriteApi();
+$writeApi = $client->createGuzzleWriteApi();
 $point = Point::measurement("mem")
     ->addTag("host", "host1")
     ->addField("used_percent", 24.43234543)
@@ -32,7 +32,7 @@ $point = Point::measurement("mem")
 $writeApi->write($point);
 $writeApi->close();
 
-$queryApi = $client->createQueryApi();
+$queryApi = $client->createGuzzleQueryApi();
 $query = "from(bucket: \"{$bucket}\") |> range(start: -1h)";
 $tables = $queryApi->query($query);
 

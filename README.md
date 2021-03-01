@@ -89,7 +89,7 @@ $this->client = new Client([
     "debug" => false
 ]);
 
-$this->queryApi = $this->client->createQueryApi();
+$this->queryApi = $this->client->createGuzzleQueryApi();
 
 $result = $this->queryApi->queryRaw(
             'from(bucket:"my-bucket") |> range(start: 1970-01-01T00:00:00.000000001Z) |> last()');
@@ -106,7 +106,7 @@ $this->client = new Client([
     "debug" => false
 ]);
 
-$this->queryApi = $this->client->createQueryApi();
+$this->queryApi = $this->client->createGuzzleQueryApi();
 
 $result = $this->queryApi->query(
             'from(bucket:"my-bucket") |> range(start: 1970-01-01T00:00:00.000000001Z) |> last()');
@@ -129,7 +129,7 @@ $this->client = new Client([
     "debug" => false
 ]);
 
-$this->queryApi = $this->client->createQueryApi();
+$this->queryApi = $this->client->createGuzzleQueryApi();
 
 $parser = $this->queryApi->queryStream(
             'from(bucket:"my-bucket") |> range(start: 1970-01-01T00:00:00.000000001Z) |> last()');
@@ -152,7 +152,7 @@ $client = new InfluxDB2\Client(["url" => "http://localhost:8086", "token" => "my
     "org" => "my-org",
     "precision" => InfluxDB2\Model\WritePrecision::NS
 ]);
-$write_api = $client->createWriteApi();
+$write_api = $client->createGuzzleWriteApi();
 $write_api->write('h2o,location=west value=33i 15');
 ```
 #### Batching
@@ -178,7 +178,7 @@ $client = new Client(["url" => "http://localhost:8086", "token" => "my-token",
     "precision" => InfluxDB2\Model\WritePrecision::NS
 ]);
 
-$writeApi = $client->createWriteApi(
+$writeApi = $client->createGuzzleWriteApi(
     ["writeType" => WriteType::BATCHING, 'batchSize' => 1000]);
 
 foreach (range(1, 10000) as $number) {
@@ -209,7 +209,7 @@ $client = new InfluxDB2\Client([
     "org" => "my-org",
 ]);
 
-$writeApi = $client->createWriteApi();
+$writeApi = $client->createGuzzleWriteApi();
 $writeApi->write('h2o,location=west value=33i 15', \InfluxDB2\Model\WritePrecision::MS);
 ```
 Allowed values for precision are:
@@ -236,7 +236,7 @@ but there is also possibility to override configuration per write:
 ```php
 $client = new InfluxDB2\Client(["url" => "http://localhost:8086", "token" => "my-token"]);
 
-$writeApi = $client->createWriteApi();
+$writeApi = $client->createGuzzleWriteApi();
 $writeApi->write('h2o,location=west value=33i 15', \InfluxDB2\Model\WritePrecision::MS, "production-bucket", "customer-1");
 ```
 
@@ -258,7 +258,7 @@ $client = new InfluxDB2\Client([
     "precision" => InfluxDB2\Model\WritePrecision::US
 ]);
 
-$writeApi = $client->createWriteApi();
+$writeApi = $client->createGuzzleWriteApi();
 
 //data in Point structure
 $point=InfluxDB2\Point::measurement("h2o")
@@ -302,7 +302,7 @@ $this->client = new Client([
         'hostname' => '${env.Hostname}']
 ]);
 
-$writeApi = $this->client->createWriteApi(null, ['data_center' => '${env.data_center}']);
+$writeApi = $this->client->createGuzzleWriteApi(null, ['data_center' => '${env.data_center}']);
     
 $writeApi->pointSettings->addDefaultTag('customer', 'California Miner');
 
@@ -362,10 +362,10 @@ $client = new Client([
     "precision" => InfluxDB2\Model\WritePrecision::S
 ]);
 
-function findMyOrg($client): ?Organization
+function findMyOrg(Client $client): ?Organization
 {
     /** @var OrganizationsService $orgService */
-    $orgService = $client->createService(OrganizationsService::class);
+    $orgService = $client->createGuzzleService(OrganizationsService::class);
     $orgs = $orgService->getOrgs()->getOrgs();
     foreach ($orgs as $org) {
         if ($org->getName() == $client->options["org"]) {
@@ -375,7 +375,7 @@ function findMyOrg($client): ?Organization
     return null;
 }
 
-$bucketsService = $client->createService(BucketsService::class);
+$bucketsService = $client->createGuzzleService(BucketsService::class);
 
 $rule = new BucketRetentionRules();
 $rule->setEverySeconds(3600);
@@ -446,7 +446,7 @@ $client = new Client([
 // Delete data by measurement and tag value
 //
 /** @var DefaultService $service */
-$service = $client->createService(DefaultService::class);
+$service = $client->createGuzzleService(DefaultService::class);
 
 $predicate = new DeletePredicateRequest();
 $predicate->setStart(DateTime::createFromFormat('Y', '2020'));

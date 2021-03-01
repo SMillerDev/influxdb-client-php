@@ -12,7 +12,7 @@ class ITUsersServiceTest extends IntegrationBaseTestCase
     public function testUserService()
     {
         /** @var UsersService $usersService */
-        $usersService = $this->client->createService(UsersService::class);
+        $usersService = $this->client->createGuzzleService(UsersService::class);
         $users = $usersService->getUsers()->getUsers();
         foreach ($users as $user) {
             self::assertNotEmpty($user->getName());

@@ -2,6 +2,7 @@
 
 namespace InfluxDB2Test;
 
+use Exception;
 use GuzzleHttp\Psr7\Response;
 use InfluxDB2\ApiException;
 use InfluxDB2\Point;
@@ -142,7 +143,7 @@ class WriteApiTest extends BasicTest
             $this->assertEquals(400, $e->getCode());
             $this->assertEquals('invalid', implode($e->getResponseHeaders()['X-Platform-Error-Code']));
             $this->assertEquals($errorBody, strval($e->getResponseBody()));
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->fail();
         }
     }

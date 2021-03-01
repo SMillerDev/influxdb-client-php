@@ -94,7 +94,7 @@ class DefaultApiTest extends BasicTest
             "verifySSL" => false
         ]);
 
-        $config = $client->createQueryApi()->http->getConfig();
+        $config = $client->createGuzzleQueryApi()->http->getConfig();
 
         $this->assertEquals(false, $config['verify']);
 

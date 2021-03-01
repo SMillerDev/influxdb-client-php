@@ -26,7 +26,7 @@ $client = new Client([
 //
 // Write data into InfluxDB
 //
-$writeApi = $client->createWriteApi();
+$writeApi = $client->createGuzzleWriteApi();
 $point1 = Point::measurement("mem")
     ->addTag("host", "host1")
     ->addField("used_percent", 24.43234543);
@@ -40,7 +40,7 @@ $writeApi->close();
 // Delete data by tag value: 'host = host2'
 //
 /** @var DefaultService $service */
-$service = $client->createService(DefaultService::class);
+$service = $client->createGuzzleService(DefaultService::class);
 
 $predicate = new DeletePredicateRequest();
 $predicate->setStart(DateTime::createFromFormat('Y', '2020'));
@@ -51,7 +51,7 @@ $service->deletePost($predicate, null, $org, $bucket);
 //
 // Query Data
 //
-$queryApi = $client->createQueryApi();
+$queryApi = $client->createGuzzleQueryApi();
 $query = "from(bucket: \"{$bucket}\") |> range(start: -1h)";
 $tables = $queryApi->query($query);
 

@@ -22,7 +22,7 @@ $client = new Client([
 
 print  "*** Write by batching ***\n";
 
-$writeApi = $client->createWriteApi(
+$writeApi = $client->createGuzzleWriteApi(
     ["writeType" => WriteType::BATCHING, 'batchSize' => 1000]
 );
 
@@ -35,7 +35,7 @@ $client->close();
 
 print  "*** Check result ***\n";
 
-$queryApi = $client->createQueryApi();
+$queryApi = $client->createGuzzleQueryApi();
 $query = "from(bucket: \"$bucket\")
     |> range(start: 0)
     |> filter(fn: (r) => r[\"_measurement\"] == \"mem\")

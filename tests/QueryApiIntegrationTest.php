@@ -30,8 +30,8 @@ class QueryApiIntegrationTest extends TestCase
             "org" => "my-org",
             "debug" => false
         ]);
-        $this->writeApi = $this->client->createWriteApi();
-        $this->queryApi = $this->client->createQueryApi();
+        $this->writeApi = $this->client->createGuzzleWriteApi();
+        $this->queryApi = $this->client->createGuzzleQueryApi();
     }
 
     public function testExistsApi()
@@ -88,8 +88,7 @@ class QueryApiIntegrationTest extends TestCase
             ->addField('level', 2)
             ->time($now, WritePrecision::US));
 
-        $query = 'from(bucket: "my-bucket") |> range(start: 0)
+        return 'from(bucket: "my-bucket") |> range(start: 0)
             |> filter(fn: (r) => r._measurement == "' . $measurement . '")';
-        return $query;
     }
 }

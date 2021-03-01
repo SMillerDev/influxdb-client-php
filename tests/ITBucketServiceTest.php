@@ -16,7 +16,7 @@ class ITBucketServiceTest extends IntegrationBaseTestCase
 {
     public function testHealthService()
     {
-        $healthService = $this->client->createService(HealthService::class);
+        $healthService = $this->client->createGuzzleService(HealthService::class);
         $healthCheck = $healthService->getHealth();
         self::assertEquals("influxdb", $healthCheck->getName());
         self::assertEquals("ready for queries and writes", $healthCheck->getMessage());
@@ -58,7 +58,7 @@ class ITBucketServiceTest extends IntegrationBaseTestCase
     public function testBucketService()
     {
         /** @var BucketsService $bucketsService */
-        $bucketsService = $this->client->createService(BucketsService::class);
+        $bucketsService = $this->client->createGuzzleService(BucketsService::class);
         $buckets = $bucketsService->getBuckets(null, null, 100, null)->getBuckets();
         foreach ($buckets as $bucket) {
             self::assertNotEmpty($bucket->getName());
@@ -69,7 +69,7 @@ class ITBucketServiceTest extends IntegrationBaseTestCase
     public function testBucketServiceCreateBucket()
     {
         /** @var BucketsService $bucketsService */
-        $bucketsService = $this->client->createService(BucketsService::class);
+        $bucketsService = $this->client->createGuzzleService(BucketsService::class);
 
         $rule = new BucketRetentionRules();
         $rule->setEverySeconds(3600);

@@ -13,7 +13,7 @@ class ClientTest extends BasicTest
 {
     public function test_health()
     {
-        $health = $this->client->health();
+        $health = $this->client->guzzleHealth();
 
         $this->assertEquals('ready for queries and writes', $health->getMessage());
         $this->assertEquals('influxdb', $health->getName());
@@ -28,7 +28,7 @@ class ClientTest extends BasicTest
             "token" => "my-token",
         ]);
 
-        $health = $this->client->health();
+        $health = $this->client->guzzleHealth();
 
         $this->assertStringContainsString('Failed to connect to localhost port 8099', $health->getMessage());
         $this->assertEquals('influxdb', $health->getName());

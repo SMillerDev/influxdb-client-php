@@ -32,7 +32,7 @@ class WriteApiIntegrationTest extends TestCase
             "org" => "my-org",
             "debug" => false
         ]);
-        $this->writeApi = $this->client->createWriteApi();
+        $this->writeApi = $this->client->createGuzzleWriteApi();
     }
 
     public function testExistsWriteApi()

@@ -28,7 +28,7 @@ class IntegrationBaseTestCase extends TestCase
     public function findMyOrg(): ?Organization
     {
         /** @var OrganizationsService $orgService */
-        $orgService = $this->client->createService(OrganizationsService::class);
+        $orgService = $this->client->createGuzzleService(OrganizationsService::class);
         $orgs = $orgService->getOrgs()->getOrgs();
         foreach ($orgs as $org) {
             if ($org->getName() == $this->options["org"]) {

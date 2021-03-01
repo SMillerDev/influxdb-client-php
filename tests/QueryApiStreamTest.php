@@ -32,8 +32,8 @@ class QueryApiStreamTest extends TestCase
             "debug" => false
         ]);
 
-        $this->writeApi = $this->client->createWriteApi();
-        $this->queryApi = $this->client->createQueryApi();
+        $this->writeApi = $this->client->createGuzzleWriteApi();
+        $this->queryApi = $this->client->createGuzzleQueryApi();
 
         $this->now = new DateTime();
     }

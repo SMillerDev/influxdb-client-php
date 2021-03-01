@@ -28,7 +28,7 @@ class PointSettingsTest extends TestCase
 
     public function testPointSettings()
     {
-        $writeApi = $this->client->createWriteApi(null, ['customer' => PointSettingsTest::CUSTOMER_TAG]);
+        $writeApi = $this->client->createGuzzleWriteApi(null, ['customer' => PointSettingsTest::CUSTOMER_TAG]);
 
         $defaultTags = $writeApi->pointSettings->getDefaultTags();
 
@@ -40,7 +40,7 @@ class PointSettingsTest extends TestCase
     {
         putenv("data_center=LA");
 
-        $writeApi = $this->client->createWriteApi();
+        $writeApi = $this->client->createGuzzleWriteApi();
 
         $writeApi->pointSettings->addDefaultTag('customer', PointSettingsTest::CUSTOMER_TAG);
 
