@@ -5,15 +5,17 @@ namespace InfluxDB2;
 use Exception;
 use InfluxDB2\Model\HealthCheck;
 
-class HealthApi extends DefaultApi
+class HealthApi
 {
+    private $api;
+
     /**
      * HealthApi constructor.
-     * @param array $options
+     * @param DefaultApi $api
      */
-    public function __construct(array $options)
+    public function __construct(DefaultApi $api)
     {
-        parent::__construct($options);
+        $this->api = $api;
     }
 
     /**
@@ -24,7 +26,7 @@ class HealthApi extends DefaultApi
     public function health(): HealthCheck
     {
         try {
-            $response = $this->get('', "/health", []);
+            $response = $this->api->get(NULL, "/health", []);
             return ObjectSerializer::deserialize($response->getBody()->getContents(), '\InfluxDB2\Model\HealthCheck');
         } catch (Exception $e) {
             return new HealthCheck([

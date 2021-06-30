@@ -1,4 +1,5 @@
 ## 1.14.0 [unreleased]
+1. [#69](https://github.com/influxdata/influxdb-client-php/pull/69): Split guzzle out of API classes
 
 ## 1.13.0 [2021-06-04]
 

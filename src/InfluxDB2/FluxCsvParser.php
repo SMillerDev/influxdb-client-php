@@ -42,12 +42,12 @@ class FluxCsvParser
 
     /**
      * FluxCsvParser constructor.
-     * @param $response mixed response to by parsed
+     * @param $response string response to by parsed
      * @param $stream bool use streaming
      */
     public function __construct($response, $stream = false)
     {
-        $this->response = is_string($response) ? new Stream($this->stringToStream($response)) : $response;
+        $this->response = new Stream($this->stringToStream($response));
         $this->stream = $stream;
         $this->tableIndex = 0;
         if (!$stream) {

@@ -6,7 +6,7 @@ namespace InfluxDB2;
  * Write time series data into InfluxDB.
  * @package InfluxDB2
  */
-class WriteApi extends DefaultApi implements Writer
+class WriteApi implements Writer
 {
     public $writeOptions;
     public $pointSettings;
@@ -14,6 +14,8 @@ class WriteApi extends DefaultApi implements Writer
     /** @var Worker */
     private $worker;
     public $closed = false;
+    private $options;
+    private $api;
 
     /**
      * WriteApi constructor.
@@ -21,9 +23,10 @@ class WriteApi extends DefaultApi implements Writer
      * @param array|null $writeOptions
      * @param array|null $pointSettings
      */
-    public function __construct($options, array $writeOptions = null, array $pointSettings = null)
+    public function __construct($options, array $writeOptions = null, array $pointSettings = null, DefaultApi $api = null)
     {
-        parent::__construct($options);
+        $this->options = $options;
+        $this->api = $api;
         $this->writeOptions = new WriteOptions($writeOptions) ?: new WriteOptions();
         $this->pointSettings = new PointSettings($pointSettings) ?: new PointSettings();
 
@@ -68,9 +71,9 @@ class WriteApi extends DefaultApi implements Writer
         $bucketParam = $this->getOption("bucket", $bucket);
         $orgParam = $this->getOption("org", $org);
 
-        $this->check("precision", $precisionParam);
-        $this->check("bucket", $bucketParam);
-        $this->check("org", $orgParam);
+        $this->api->check("precision", $precisionParam);
+        $this->api->check("bucket", $bucketParam);
+        $this->api->check("org", $orgParam);
 
         $this->addDefaultTags($data);
 
@@ -125,9 +128,9 @@ class WriteApi extends DefaultApi implements Writer
         $bucketParam = $this->getOption("bucket", $bucket);
         $orgParam = $this->getOption("org", $org);
 
-        $this->check("precision", $precisionParam);
-        $this->check("bucket", $bucketParam);
-        $this->check("org", $orgParam);
+        $this->api->check("precision", $precisionParam);
+        $this->api->check("bucket", $bucketParam);
+        $this->api->check("org", $orgParam);
 
         $queryParams = ["org" => $orgParam, "bucket" => $bucketParam, "precision" => $precisionParam];
 
@@ -142,7 +145,7 @@ class WriteApi extends DefaultApi implements Writer
         );
 
         $retry->retry(function () use ($data, $queryParams) {
-            $this->post($data, "/api/v2/write", $queryParams);
+            $this->api->post($data, "/api/v2/write", $queryParams);
         });
     }
     public function close()
@@ -161,8 +164,8 @@ class WriteApi extends DefaultApi implements Writer
         return $this->worker;
     }
 
-    private function getOption(string $optionName, string $precision = null): string
+    private function getOption(string $optionName, string $specifiedValue = null): string
     {
-        return isset($precision) ? $precision : $this->options["$optionName"];
+        return $specifiedValue ?? $this->options["$optionName"];
     }
 }

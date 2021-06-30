@@ -19,6 +19,7 @@ class Client
     public $options;
     public $closed = false;
     private $autoCloseable = array();
+    private $api = null;
 
     /**
      * Client constructor.
@@ -43,6 +44,20 @@ class Client
         $this->options = $options;
     }
 
+    public function setApi(DefaultApi $api): void
+    {
+        $this->api = $api;
+    }
+
+    public function getApi(): DefaultApi
+    {
+        if ($this->api === null) {
+            $this->api = new GuzzleApi($this->options);
+        }
+
+        return $this->api;
+    }
+
     /**
      * Write time series data into InfluxDB thought WriteApi.
      *      $writeOptions = [
@@ -55,7 +70,7 @@ class Client
      */
     public function createWriteApi(array $writeOptions = null, array $pointSettings = null): WriteApi
     {
-        $writeApi = new WriteApi($this->options, $writeOptions, $pointSettings);
+        $writeApi = new WriteApi($this->options, $writeOptions, $pointSettings, $this->getApi());
         $this->autoCloseable[] = $writeApi;
         return $writeApi;
     }
@@ -64,7 +79,7 @@ class Client
      * @return UdpWriter
      * @throws \Exception
      */
-    public function createUdpWriter()
+    public function createUdpWriter(): UdpWriter
     {
         return new UdpWriter($this->options);
     }
@@ -76,7 +91,7 @@ class Client
      */
     public function createQueryApi(): QueryApi
     {
-        return new QueryApi($this->options);
+        return new QueryApi($this->options, $this->getApi());
     }
 
     /**
@@ -86,7 +101,7 @@ class Client
      */
     public function health(): HealthCheck
     {
-        return (new HealthApi($this->options))->health();
+        return (new HealthApi($this->options, $this->getApi()))->health();
     }
 
     /**
@@ -101,14 +116,12 @@ class Client
         }
     }
 
-    public function getConfiguration()
+    public function getConfiguration(): Configuration
     {
-        $config = Configuration::getDefaultConfiguration()
-            ->setUserAgent('influxdb-client-php/' . Client::VERSION)
-            ->setDebug(isset($this->options['debug']) ? $this->options['debug'] : null)
-            ->setHost(null);
-
-        return $config;
+        return Configuration::getDefaultConfiguration()
+                              ->setUserAgent('influxdb-client-php/' . Client::VERSION)
+                              ->setDebug($this->options['debug'] ?? NULL)
+                              ->setHost(null);
     }
 
     /**
@@ -121,16 +134,10 @@ class Client
     {
         try {
             $class = new ReflectionClass($serviceClass);
-            $args = array($this->getGuzzleClient(), $this->getConfiguration());
+            $args = array($this->getApi(), $this->getConfiguration());
             return $class->newInstanceArgs($args);
         } catch (\ReflectionException $e) {
             throw new RuntimeException($e);
         }
-    }
-
-    private function getGuzzleClient()
-    {
-        $defaultApi = new DefaultApi($this->options);
-        return $defaultApi->http;
     }
 }
